@@ -4,7 +4,7 @@ import network  # Network configuration and management
 import time     # Time-related functions
 import socket   # Socket module for creating a socket server
 import urequests  # Module for making HTTP requests
-import struct
+import struct	#module for handling binary data
 
 
 # WiFi network configuration
@@ -38,23 +38,23 @@ print("IP info (IP address, mask, gateway, DNS):")
 print(ip)
 led.off()  # Turn off the LED
 
+#Sets the IP addresses and port numbers for both TCP and UDP servers.
 TCP_SERVER_ADDRESS = "192.168.232.248"
 TCP_SERVER_PORT = 12345
 UDP_SERVER_ADDRESS = "192.168.232.248"
 UDP_SERVER_PORT = 12000
 
+#Creates TCP and UDP socket objects using the socket module with IPv4 and stream-oriented (TCP) or datagram-oriented (UDP) sockets.
 tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-# Crée une socket UDP
 udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 
-counter = 1  # Commencez avec 1 au lieu de 0
+counter = 1  
 while True:
-    # Envoie via UDP
+    # Converts the counter to a string, encodes it, and sends it via UDP to the specified server address and port.
     udp_message = str(counter)
     udp_socket.sendto(udp_message.encode(), (UDP_SERVER_ADDRESS, UDP_SERVER_PORT))
-
+    #Attempts to send data via TCP, handles exceptions (prints an error message if any), and closes the TCP socket.
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         tcp_socket.connect((TCP_SERVER_ADDRESS, TCP_SERVER_PORT))
@@ -65,11 +65,10 @@ while True:
     finally:
         tcp_socket.close()
         
-    # Attendez avant d'envoyer la prochaine fois
+    # Introduces a delay of 0.01 seconds, increments the counter by 10, and resets it to 0 if it exceeds 250 to avoid overflow.
+    #The loop then repeats for continuous data transmission.
     time.sleep(0.01)
-    # Incrémente le compteur
     counter += 10
     if counter > 250:
         
         counter=0
-    #ok
