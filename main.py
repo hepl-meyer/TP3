@@ -4,12 +4,16 @@ import network  # Network configuration and management
 import time     # Time-related functions
 import socket   # Socket module for creating a socket server
 import urequests  # Module for making HTTP requests
+import struct
+
 
 # WiFi network configuration
 # WIFI_SSID =  "Proximus-Home-CBD0"  # WiFi network name (SSID)
 # WIFI_PASSWORD = "wf9wzu96z4cmx"   # WiFi network password
-WIFI_SSID =  "electroProjectWifi"  # WiFi network name (SSID)
-WIFI_PASSWORD = "M13#MRSE"   # WiFi network password
+#WIFI_SSID =  "electroProjectWifi"  # WiFi network name (SSID)
+#WIFI_PASSWORD = "M13#MRSE"   # WiFi network password
+WIFI_SSID =  "ETAGE 2"  # WiFi network name (SSID)
+WIFI_PASSWORD = "marmol40"   # WiFi network password
 # LED pin configuration
 led = machine.Pin(2, machine.Pin.OUT)  # Configure a LED connected to GPIO pin 2
 
@@ -33,3 +37,38 @@ ip = wlan.ifconfig()
 print("IP info (IP address, mask, gateway, DNS):")
 print(ip)
 led.off()  # Turn off the LED
+
+TCP_SERVER_ADDRESS = "192.168.1.87"
+TCP_SERVER_PORT = 12345
+UDP_SERVER_ADDRESS = "192.168.1.87"
+UDP_SERVER_PORT = 12346
+
+tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# Crée une socket UDP
+udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+# Fonction pour envoyer les données via TCP et UDP
+# Fonction pour envoyer les données via TCP et UDP
+
+counter = 1  # Commencez avec 1 au lieu de 0
+while True:
+    # Envoie via UDP
+    message = str(counter)
+    udp_socket.sendto(message.encode(), (UDP_SERVER_ADDRESS, UDP_SERVER_PORT))
+
+    tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        tcp_socket.connect((TCP_SERVER_ADDRESS, TCP_SERVER_PORT))
+        tcp_message = str(counter)
+        tcp_socket.send(tcp_message.encode())
+    except Exception as e:
+        print("Error sending TCP data:", e)
+    finally:
+        tcp_socket.close()
+    # Attendez avant d'envoyer la prochaine fois
+    time.sleep(0.1)
+
+    # Incrémente le compteur
+    counter += 10
+    #ok
